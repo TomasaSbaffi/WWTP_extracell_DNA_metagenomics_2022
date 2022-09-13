@@ -95,6 +95,7 @@ mkdir LOGS
 # Soft links to the raw data
 ln -s RAW_READS/*fastq.gz .
 
+project=THIS_PROJECT
 db_dARG_path=DB_PATH
 samples=`ls *fastq.gz | awk '{split($0,x,".r"); print x[1]}' | sort | uniq`
 
@@ -107,7 +108,18 @@ deeparg short_reads_pipeline \
     --deeparg_identity 90 \
     --deeparg_evalue 1e-10 \
     --deeparg_probability 0.8 &> LOGS/${sample}.log.txt
-done        
+done
+
+# Retrieving ARGs normalised pivot table
+pivots=`ls *.merged.quant.subtype | ls *merged.quant.subtype | awk '{printf "%s%s", sep, $0; sep=","} END{print ""}'`
+samplenames=$(basename -s .clean.deeparg.mapping.ARG.merged.quant.subtype -a *.merged.quant.subtype | awk '{printf "%s%s", sep, $0; sep=","} END{print ""}')
+
+echo "`date +"%Y%m%d %H:%M:%S"`: merging $pivots with genetools"
+
+genetools deeparg-table \
+  --deeparg-files "$pivots" \
+  --sample-names "$samplenames" \
+  --output-file "${project}_pivot.tsv"
 ```
 
 Log files include info about quality check single steps outcomes and 16S rRNA gene hit counts (Greengenes db) that the pipeline uses to normalise ARGs abundancies.
