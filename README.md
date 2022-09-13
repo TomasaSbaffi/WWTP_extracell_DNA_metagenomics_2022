@@ -1,8 +1,10 @@
-# WWTP_extracell_DNA_metagenomics_2022
+# WWTP Intra_extra_cellular DNA metagenomics 2022
 
 Bioinformatics workflow used in the article:
 
 > Periyasamy S, Sabbatino R, Sbaffi T,... Corno G, Di Casare A. 2022. Title. ref. doi: xxxx.
+
+For the biostatistics workflow of the same paper, [Click here](Intra_Extra_DNA - Script x Statistical analysis.R)
 
 
 ## Contacts
