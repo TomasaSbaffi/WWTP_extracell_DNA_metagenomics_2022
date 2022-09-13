@@ -124,5 +124,5 @@ genetools deeparg-table \
 
 Log files include info about quality check single steps outcomes and 16S rRNA gene hit counts (Greengenes db) that the pipeline uses to normalise ARGs abundancies.
 
-
+ 
 
