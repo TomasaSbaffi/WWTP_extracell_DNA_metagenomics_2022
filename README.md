@@ -159,7 +159,6 @@ grep "g__" metaphlan3_${project}_pivot.txt | grep -v "|s__" | cut -f1,1 | wc -l 
 # Assembly based analysis
 
 ## Pre-processing 
-Based on the taxonomic profiles and samples origins we opted towards eight co-assemblies. Here the code for one co-assembly is provided.
 
 ```bash
 # Soft links to the raw data
@@ -184,9 +183,21 @@ flash2 TRIMGALORE/${sample}/${sample}.r1_val_1.fq.gz TRIMGALORE/${sample}/${samp
   -z \
   -t $NTHREADS
 done
-
-
 ```
 
+### Assemble reads with MEGAHIT
+Based on the taxonomic profiles and samples origins we opted towards eight co-assemblies. Here the code for one co-assembly is provided.
+Small co-assemblies were produced, the first includes the "IVB_pre" two samples.
 
+```bash
+mkdir ASSEMBLIES
+        
+megahit --presets meta-sensitive \
+        -1 FLASH/IVB_pre_day1/out.notCombined_1.fastq.gz,FLASH/IVB_pre_day2/out.notCombined_1.fastq.gz \
+        -2 FLASH/IVB_pre_day1/out.notCombined_2.fastq.gz,FLASH/IVB_pre_day2/out.notCombined_2.fastq.gz \
+        -r FLASH/IVB_pre_day1/out.extendedFrags.fastq.gz,FLASH/IVB_pre_day2/out.extendedFrags.fastq.gz \
+        --min-contig-len 1000\
+        -t $NTHREADS \
+        --out-dir IVB_pre_m1000    
+```
 
