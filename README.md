@@ -166,6 +166,7 @@ Based on the taxonomic profiles and samples origins we opted towards eight co-as
 ln -s RAW_READS/*fastq.gz .
 
 mkdir TRIMGALORE
+mkdir FLASH
 
 samples=`ls *fastq.gz | awk '{split($0,x,".r"); print x[1]}' | sort | uniq`
 
@@ -175,6 +176,16 @@ trim_galore --paired ${sample}.r1.fastq.gz ${sample}.r2.fastq.gz \
   -q 20 \
   -o TRIMGALORE/${sample}/
 done
+
+for sample in ${samples} ; do
+flash2 TRIMGALORE/${sample}/${sample}.r1_val_1.fq.gz TRIMGALORE/${sample}/${sample}.r2_val_2.fq.gz \
+  -d FLASH/${sample}/ \
+  -M 170 \
+  -z \
+  -t $NTHREADS
+done
+
+
 ```
 
 
