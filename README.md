@@ -158,4 +158,24 @@ grep "g__" metaphlan3_${project}_pivot.txt | grep -v "|s__" | cut -f1,1 | wc -l 
 
 # Assembly based analysis
 
+## Pre-processing 
+Based on the taxonomic profiles and samples origins we opted towards eight co-assemblies. Here the code for one co-assembly is provided.
+
+```bash
+# Soft links to the raw data
+ln -s RAW_READS/*fastq.gz .
+
+mkdir TRIMGALORE
+
+samples=`ls *fastq.gz | awk '{split($0,x,".r"); print x[1]}' | sort | uniq`
+
+for sample in ${samples} ; do
+mkdir TRIMGALORE/${sample}
+trim_galore --paired ${sample}.r1.fastq.gz ${sample}.r2.fastq.gz \
+  -q 20 \
+  -o TRIMGALORE/${sample}/
+done
+```
+
+
 
