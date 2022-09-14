@@ -60,13 +60,16 @@ It sghould be possible running the analysis with any UNIX-based OS.
 
 ### Define number of threads to use
 
-You should change below to the number of cores available in your system:
+You should change below to the number of cores available in your system and set you project name:
 
 ```bash
 NTHREADS=40
+project=THIS_PROJECT
 ```
 
-# Pre-processing of raw metagenomic data
+# Read based analysis
+
+## Pre-processing of raw metagenomic data and deepARG
 
 We have a total of 16 samples sequenced with Illumina.
 
@@ -97,7 +100,6 @@ mkdir LOGS
 # Soft links to the raw data
 ln -s RAW_READS/*fastq.gz .
 
-project=THIS_PROJECT
 db_dARG_path=DB_PATH
 samples=`ls *fastq.gz | awk '{split($0,x,".r"); print x[1]}' | sort | uniq`
 
@@ -126,5 +128,29 @@ genetools deeparg-table \
 
 Log files include info about quality check single steps outcomes and 16S rRNA gene hit counts (Greengenes db) that the pipeline uses to normalise ARGs abundancies.
 
- 
 
+## Taxonomic assessment
+ 
+```bash
+# Soft links to the cleaned data
+ln -s deeparg_SS_out/*.clean .
+
+samples=`ls *.clean | awk '{split($0,x,".clean"); print x[1]}' | sort | uniq`
+
+for sample in $samples; do
+metaphlan ${sample}.clean \
+   --input_type fasta \
+   --bowtie2out ${sample}.bowtie2.bz2 \
+   --nproc $NTHREADS \
+   --stat_q 0.1 > ${sample}_profile.txt  # i deleted --ignore_eukaryotes --ignore_archaea 
+done
+
+# Retrieving percentage normalised taxonomic table, i.e. genus level
+
+samplenames=$(basename -s _profile.txt -a *_profile.txt | awk '{printf "%s%s", sep, $0; sep="_"} END{print ""}')
+merge_metaphlan_tables.py *_profile.txt > metaphlan3_${project}_pivot.txt
+
+grep -E "g__|clade" metaphlan3_${project}_pivot.txt | sed 's/^.*g__//g' | grep -v "|s__" | cut -f1,3-50 | sed -e 's/clade_name/genus_name/g' | sed -e 's/_profile//g' > metaphlan3_${project}_pivot_genera.txt
+
+grep "g__" metaphlan3_${project}_pivot.txt | grep -v "|s__" | cut -f1,1 | wc -l > ${project}_number_genera.txt
+```
