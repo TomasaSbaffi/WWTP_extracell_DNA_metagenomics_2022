@@ -154,3 +154,8 @@ grep -E "g__|clade" metaphlan3_${project}_pivot.txt | sed 's/^.*g__//g' | grep -
 
 grep "g__" metaphlan3_${project}_pivot.txt | grep -v "|s__" | cut -f1,1 | wc -l > ${project}_number_genera.txt
 ```
+
+
+# Assembly based analysis
+
+
