@@ -201,3 +201,22 @@ megahit --presets meta-sensitive \
         --out-dir IVB_pre_m1000    
 ```
 
+
+```bash
+# Indexing 
+mkdir index
+bwa index -p index/IVB_pre ../IVB_pre_m1000/final.contigs.fa
+
+# Mapping contigs for all the samples included in the coassembly
+mkdir SAMFILES/IVB_pre/
+bwa mem index/IVB_pre /FLASH/IVB_pre_day1/out.extendedFrags.fastq.gz \
+  -t $NTHREADS > SAMFILES/IVB_pre/IVB_pre_day1_se.sam
+bwa mem index/IVB_pre /FLASH/IVB_pre_day1/out.notCombined_1.fastq.gz /FLASH/IVB_pre_day1/out.notCombined_2.fastq.gz \
+  -t $NTHREADS > SAMFILES/IVB_pre/IVB_pre_day1_pe.sam
+  
+bwa mem index/IVB_pre /FLASH/IVB_pre_day2/out.extendedFrags.fastq.gz \
+  -t $NTHREADS > SAMFILES/IVB_pre/IVB_pre_day2_se.sam
+bwa mem index/IVB_pre /FLASH/IVB_pre_day2/out.notCombined_1.fastq.gz /FLASH/IVB_pre_day2/out.notCombined_2.fastq.gz \
+  -t $NTHREADS > SAMFILES/IVB_pre/IVB_pre_day2_pe.sam
+```
+
