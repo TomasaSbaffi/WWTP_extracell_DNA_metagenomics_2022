@@ -218,5 +218,24 @@ bwa mem index/IVB_pre /FLASH/IVB_pre_day2/out.extendedFrags.fastq.gz \
   -t $NTHREADS > SAMFILES/IVB_pre/IVB_pre_day2_se.sam
 bwa mem index/IVB_pre /FLASH/IVB_pre_day2/out.notCombined_1.fastq.gz /FLASH/IVB_pre_day2/out.notCombined_2.fastq.gz \
   -t $NTHREADS > SAMFILES/IVB_pre/IVB_pre_day2_pe.sam
+
+# sam2bam conversion
+mkdir BAMFILES
+samtools view -@ 40 -b -h SAMFILES/IVB_pre/IVB_pre_day1_pe.sam -o BAMFILES/IVB_pre/IVB_pre_day1_pe.bam
+samtools view -@ 40 -b -h SAMFILES/IVB_pre/IVB_pre_day1_se.sam -o BAMFILES/IVB_pre/IVB_pre_day1_se.bam
+samtools view -@ 40 -b -h SAMFILES/IVB_pre/IVB_pre_day2_pe.sam -o BAMFILES/IVB_pre/IVB_pre_day2_pe.bam
+samtools view -@ 40 -b -h SAMFILES/IVB_pre/IVB_pre_day2_se.sam -o BAMFILES/IVB_pre/IVB_pre_day2_se.bam
+
+#samtools sort
+samtools sort -@ 40 -o BAMFILES/IVB_pre/sorted/IVB_pre_day1_pe_sorted.bam BAMFILES/IVB_pre/IVB_pre_day1_pe.bam
+samtools sort -@ 40 -o BAMFILES/IVB_pre/sorted/IVB_pre_day1_se_sorted.bam BAMFILES/IVB_pre/IVB_pre_day1_se.bam
+samtools sort -@ 40 -o BAMFILES/IVB_pre/sorted/IVB_pre_day2_pe_sorted.bam BAMFILES/IVB_pre/IVB_pre_day2_pe.bam
+samtools sort -@ 40 -o BAMFILES/IVB_pre/sorted/IVB_pre_day2_se_sorted.bam BAMFILES/IVB_pre/IVB_pre_day2_se.bam
+
+# Indexing samtools files
+samtools index BAMFILES/IVB_pre/sorted/IVB_pre_day1_pe_sorted.bam
+samtools index BAMFILES/IVB_pre/sorted/IVB_pre_day1_se_sorted.bam
+samtools index BAMFILES/IVB_pre/sorted/IVB_pre_day2_pe_sorted.bam
+samtools index BAMFILES/IVB_pre/sorted/IVB_pre_day2_se_sorted.bam
 ```
 
