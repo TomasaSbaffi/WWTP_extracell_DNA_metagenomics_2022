@@ -239,3 +239,18 @@ samtools index BAMFILES/IVB_pre/sorted/IVB_pre_day2_pe_sorted.bam
 samtools index BAMFILES/IVB_pre/sorted/IVB_pre_day2_se_sorted.bam
 ```
 
+### Binning contigs with Metabat2
+
+```bash
+# Making the contig depth file (Make the output dir/ before running)
+jgi_summarize_bam_contig_depths --outputDepth IVB_pre_m1000/depth.txt /BAMFILES/IVB_pre/sorted/*bam
+
+# metabat using -m 1500
+metabat2 --saveCls -m 1500 -v -t $NTHREADS -i /IVB_pre_m1000/final.contigs.fa -o IVB_pre_m1000/metabat2_1500/bin -a IVB_pre_m1000/depth.txt
+
+# metabat using -m 2000
+metabat2 --saveCls -m 2000 -v -t $NTHREADS -i /IVB_pre_m1000/final.contigs.fa -o IVB_pre_m1000/metabat2_2000/bin -a IVB_pre_m1000/depth.txt
+
+# metabat using -m 2500
+metabat2 --saveCls -m 2500 -v -t $NTHREADS -i /IVB_pre_m1000/final.contigs.fa -o IVB_pre_m1000/metabat2_2500/bin -a IVB_pre_m1000/depth.txt
+```
