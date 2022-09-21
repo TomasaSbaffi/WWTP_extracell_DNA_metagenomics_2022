@@ -254,3 +254,66 @@ metabat2 --saveCls -m 2000 -v -t $NTHREADS -i /IVB_pre_m1000/final.contigs.fa -o
 # metabat using -m 2500
 metabat2 --saveCls -m 2500 -v -t $NTHREADS -i /IVB_pre_m1000/final.contigs.fa -o IVB_pre_m1000/metabat2_2500/bin -a IVB_pre_m1000/depth.txt
 ```
+
+### Refining bins with refineM ...
+
+```bash
+# REFINE 1500, PART I (refineM)
+
+cd /marconi_scratch/userexternal/afranzet/SIVA_redtear_2022/Assembly_ok
+
+# calculate contigs metrics in each bin # ident. contigs with divergent genomic properties # removing contigs
+refinem scaffold_stats -r -x fa -c 40 IVB_pre_metasens_m1000/final.contigs.fa  IVB_pre/metabat2_1500/ IVB_pre/metabat2_1500/scaffold_stats/ bamfiles/IVB_pre/sorted/*.bam
+refinem outliers IVB_pre/metabat2_1500/scaffold_stats/scaffold_stats.tsv IVB_pre/metabat2_1500/outliers/
+refinem filter_bins -x fa IVB_pre/metabat2_1500/ IVB_pre/metabat2_1500/outliers/outliers.tsv IVB_pre/metabat2_1500/filtered_bins/
+
+## identify contigs with divergent tax assignments # predicting genes in contigs # DIAMOND # identifying the contigs # filtering bins
+refinem call_genes -c 40 -x fa IVB_pre/metabat2_1500/filtered_bins/ IVB_pre/metabat2_1500/called_genes/
+refinem taxon_profile -c 40 IVB_pre/metabat2_1500/called_genes/ IVB_pre/metabat2_1500/scaffold_stats/scaffold_stats.tsv /marconi_scratch/userexternal/afranzet/databases_temp/refinem/diamond_proteinDB/gtdb_r95_protein_db.2020-07-30.faa.dmnd /marconi_scratch/userexternal/afranzet/databases_temp/refinem/taxonomy/gtdb_r95_taxonomy.2020-07-30.tsv IVB_pre/metabat2_1500/taxon_profile/
+
+refinem taxon_filter -c 40 IVB_pre/metabat2_1500/taxon_profile/ IVB_pre/metabat2_1500/taxon_profile/taxon_filter.tsv
+refinem filter_bins -x fa IVB_pre/metabat2_1500/filtered_bins/ IVB_pre/metabat2_1500/taxon_profile/taxon_filter.tsv IVB_pre/metabat2_1500/filtered_bins_part2/
+
+
+## REFINE 1500, PART II (MAGpurify)
+
+cd IVB_pre/metabat2_1500/filtered_bins_part2/
+mkdir filtered_bins_final
+for bin in *.fa
+do
+        SAMPLE=$(echo ${bin} | sed "s/.filtered.filtered.fa//")
+        echo $SAMPLE
+        magpurify phylo-markers $bin output/${SAMPLE} --threads 40 --db /marconi_scratch/userexternal/afranzet/databases_temp/MAGpurify-db-v1.0/
+        magpurify clade-markers $bin output/${SAMPLE} --db /marconi_scratch/userexternal/afranzet/databases_temp/MAGpurify-db-v1.0/
+        magpurify tetra-freq $bin output/${SAMPLE}
+        magpurify gc-content $bin output/${SAMPLE}
+        magpurify known-contam $bin output/${SAMPLE} --threads 40 --db /marconi_scratch/userexternal/afranzet/databases_temp/MAGpurify-db-v1.0/
+        magpurify clean-bin $bin output/${SAMPLE} filtered_bins_final/${SAMPLE}_cleaned.fna
+done
+#
+
+# QUALITY CHECKS 1500
+
+cd /marconi_scratch/userexternal/afranzet/SIVA_redtear_2022/Assembly_ok
+
+## using checkM to discover lineage for refined bins
+checkm lineage_wf -f IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/CheckM.txt -t 40 -x fna IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/ IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/SCG/
+
+## analyze final bins with checkM
+checkm analyze --ali --nt -t 40 -x fna IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/SCG/lineage.ms IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/ IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/analyze_out/
+
+## full qa with checkM
+checkm qa -t 40 IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/SCG/lineage.ms IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/analyze_out/ --tab_table -f IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/qa_finalbins.txt -o 2
+
+## placing bins into tree with checkM
+checkm tree --ali --nt -t 40 -x fna IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/ IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/tree/
+
+## QA on the tree information with checkM
+checkm tree_qa IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/tree/ -f IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/tree_qa.txt --tab_table
+
+### that should be it, now you have refined bins!
+echo "`date +"%Y%m%d %H:%M:%S"`: FINISHED_1500!"
+#################################################
+
+
+```
