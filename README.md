@@ -321,7 +321,7 @@ done
 #
 ```
 
-### Quality checking refined MAGs
+### Quality checking refined bins
 
 ```bash
 ## using checkM to discover lineage for refined bins
