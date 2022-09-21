@@ -273,9 +273,12 @@ refinem taxon_profile -c 40 IVB_pre/metabat2_1500/called_genes/ IVB_pre/metabat2
 
 refinem taxon_filter -c 40 IVB_pre/metabat2_1500/taxon_profile/ IVB_pre/metabat2_1500/taxon_profile/taxon_filter.tsv
 refinem filter_bins -x fa IVB_pre/metabat2_1500/filtered_bins/ IVB_pre/metabat2_1500/taxon_profile/taxon_filter.tsv IVB_pre/metabat2_1500/filtered_bins_part2/
+```
 
+### ... and MAGpurify
 
-## REFINE 1500, PART II (MAGpurify)
+```bash
+# REFINE 1500, PART II (MAGpurify)
 
 cd IVB_pre/metabat2_1500/filtered_bins_part2/
 mkdir filtered_bins_final
@@ -291,9 +294,11 @@ do
         magpurify clean-bin $bin output/${SAMPLE} filtered_bins_final/${SAMPLE}_cleaned.fna
 done
 #
+```
 
-# QUALITY CHECKS 1500
+### Quality checking refined MAGs
 
+```bash
 cd /marconi_scratch/userexternal/afranzet/SIVA_redtear_2022/Assembly_ok
 
 ## using checkM to discover lineage for refined bins
@@ -313,7 +318,4 @@ checkm tree_qa IVB_pre/metabat2_1500/filtered_bins_part2/filtered_bins_final/tre
 
 ### that should be it, now you have refined bins!
 echo "`date +"%Y%m%d %H:%M:%S"`: FINISHED_1500!"
-#################################################
-
-
 ```
