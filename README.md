@@ -21,10 +21,8 @@ Principal Investigator
 ## Table of contents
 
 1. [Before starting](#before-starting)
-2. [Download genomes and import to anvi'o](#download-genomes-and-import-to-anvio)
-3. [Annotation](#annotation)
-4. [Phylogeny and phylogenomics](#phylogeny-and-phylogenomics)
-5. [Abundance analysis](#abundance-analysis)
+2. [Read based analysis](#read-based-analysis)
+3. [Assembly based analysis](#assembly-based-analysis)
 
 
 ## Before starting
