@@ -54,7 +54,7 @@ Principal Investigator
 * Magpurify v2.1.2
 * prodigal v2.6.3
  
-It sghould be possible running the analysis with any UNIX-based OS.
+It should be possible running the analysis with any UNIX-based OS.
 
 ### Define number of threads to use
 
