@@ -10,7 +10,7 @@ For the biostatistics workflow of the same paper, [Click here](Intra_Extra_DNA_s
 ## Contacts
 
 **Tomasa Sbaffi**  
-Postdoctoral Researcher  
+Postdoctoral Researcher, bioinformatics  
 [E-mail](mailto:tomasa.sbaffi@gmail.com)
 
 **Andrea Di Cesare**  
