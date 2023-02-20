@@ -2,7 +2,7 @@
 
 Bioinformatics workflow used in the article:
 
-> Periyasamy S, Sabbatino R, Sbaffi T,... Corno G, Di Casare A. 2022. Title. ref. doi: xxxx.
+> Periyasamy S, Sabbatino R, Sbaffi T, Fontaneto D, Corno G, Di Casare A. 2022.  Extracellular DNA includes an important fraction of high-risk antibiotic resistance genes in treated wastewaters. Environmental Pollution, under review. doi: xxxx.
 
 For the biostatistics workflow of the same paper, [Click here](Intra_Extra_DNA_script_statistical_analysis.R)
 
